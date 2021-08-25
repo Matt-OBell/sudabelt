@@ -22,7 +22,7 @@ class ProductionLot(models.Model):
             ('expiration_date', '>', today),
             ('expiration_date', '<=', fields.Datetime.to_string(future))
         ]
-        products = self.env['stock.production.lot'].search(domain, order='expiration_date desc')
+        products = self.env['stock.production.lot'].search(domain, order='expiration_date asc')
         users = self.env.ref("stock.group_stock_manager").users
         emails = [user.partner_id.email.strip() for user in users if user.partner_id.email]
         emails = ",".join(emails)
