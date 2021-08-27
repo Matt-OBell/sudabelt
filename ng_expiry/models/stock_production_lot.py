@@ -16,7 +16,7 @@ class ProductionLot(models.Model):
         self._schedule_notification_for_expected_expiration(days)
 
     def _schedule_notification_for_expected_expiration(self, days):
-        today = fields.Datetime.now()
+        today = fields.Datetime.today()
         future = today + datetime.timedelta(days=days)
         domain = [
             ('expiration_date', '>', today),
@@ -32,6 +32,7 @@ class ProductionLot(models.Model):
                 "expiration_date": fields.Date.to_string(product.expiration_date),
                 "lot": product.name,
                 "name": product.product_id.name,
+                "days": (product.expiration_date - today).days
             }
             var.append(ctx)
         if len(var) > 0:
