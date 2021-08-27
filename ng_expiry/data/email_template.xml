@@ -12,7 +12,7 @@
                 <div style="font-family: Helvetica,arial,sans-serif">
                     <p>
                         Please be advised that the following products will expire within 6 months.<br />
-                        <table class="table table-bordered">
+                        <table class="table table-bordered table-responsive">
                             <thead>
                                 <th>Lot Number</th>
                                 <th>Product Name</th>
