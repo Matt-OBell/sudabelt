@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="billing_reject_reason_views" model="ir.ui.view">
+        <field name="name">billing.reject.reason.form</field>
+        <field name="model">billing.reject.reason.wizard</field>
+        <field name="arch" type="xml">
+        <form string="Billing Reject Reason">
+            <group>
+                <h3>
+                    Are you sure you want to reject this purchase order?
+                </h3>
+            </group>
+            <group>
+                <field name="reason"/>
+            </group>
+            <footer>
+                <button name="reject" string="Yes" type="object" class="oe_highlight"/>
+                <button string="No" class="oe_link" special="cancel" />
+            </footer>
+        </form>
+        </field>
+    </record>
+
+
+    <record id="action_billing_rejection" model="ir.actions.act_window">
+        <field name="name">Reject Billing</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">billing.reject.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

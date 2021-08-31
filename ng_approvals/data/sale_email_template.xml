@@ -1,0 +1,56 @@
+<odoo>
+
+	<record id="sale_approval_template" model="mail.template">
+		<field name="name" >Sales Approval</field>
+		<field name="email_from">${user.company_id.email}</field>
+		<field name="subject">Request for Approval</field>
+		<field name="email_to">${ctx.get('email_to')}</field>
+		<field name="model_id"   model="ir.model" search="[('model', '=', 'sale.order')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma</p>
+			<p>The Sale Order requires your approval</p>
+			<p></p>
+			<p><a href="${ctx.get('doc_link')}">Follow the link</a></p>
+			<p>Thanks</p>
+			]]>
+		</field>
+	</record>
+
+	<record id="sale_owner_approval_template" model="mail.template">
+		<field name="name" >Sales Approval</field>
+		<field name="email_from">${user.company_id.email}</field>
+		<field name="subject">Sales Order has been approved</field>
+		<field name="email_to">${ctx.get('email_to')}</field>
+		<field name="model_id"   model="ir.model" search="[('model', '=', 'sale.order')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma</p>
+			<p>Your sales order has been approved.</p>
+			<p></p>
+			<p><a href="${ctx.get('doc_link')}">Follow the link to proceed</a></p>
+			<p>Thanks</p>
+			]]>
+		</field>
+	</record>
+
+	<record id="sale_rejection_template" model="mail.template">
+		<field name="name" >Sales Rejection</field>
+		<field name="email_from">${user.company_id.email}</field>
+		<field name="subject">Sales Order has been rejected</field>
+		<field name="email_to">${ctx.get('email_to')}</field>
+		<field name="model_id"   model="ir.model" search="[('model', '=', 'sale.order')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma</p>
+			<p>Your sales order has been rejected.</p>
+			<p></p>
+			<p><a href="${ctx.get('doc_link')}">Follow the link to proceed</a></p>
+			<p>Thanks</p>
+			]]>
+		</field>
+	</record>
+</odoo>

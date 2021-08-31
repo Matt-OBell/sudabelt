@@ -1,0 +1,57 @@
+<odoo>
+
+	<record id="billing_approval_template" model="mail.template">
+		<field name="name" >Billing Approval</field>
+		<field name="email_from">${object.company_id.email}</field>
+		<field name="subject">Billing Approval request</field>
+		<field name="email_to">${ctx.get('email_to')|safe}</field>
+		<field name="model_id"   model="ir.model"  search="[('model', '=', 'account.move')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma,</p>
+			<p>The billing ${object.name} requires your approval. Kindly approve.</p>
+			<p>Regards and Thanks</p>
+			<p><a href="${ctx.get('url')}">Please follow the Link</a></p>
+			<p>System auto generated email</p>
+			]]>
+		</field>
+	</record>
+
+	<record id="billing_order_approved" model="mail.template">
+		<field name="name" >P.O Approval</field>
+		<field name="email_from">${object.company_id.email}</field>
+		<field name="subject">Billing has been approved</field>
+		<field name="email_to">${ctx.get('email_to')|safe}</field>
+		<field name="model_id" model="ir.model" search="[('model','=','account.move')]" />
+<!--				<field name="attachment_ids">email_template.attachment_ids = [(3, ids)]</field>-->
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma,</p>
+			<p>Your billing (${object.name}) has been approved</p>
+			<p>Regards</p>
+			<p>System auto generated email</p>
+			]]>
+		</field>
+	</record>
+
+	<record id="billing_rejection_template" model="mail.template">
+		<field name="name" >Billing Rejection</field>
+		<field name="email_from">${user.company_id.email}</field>
+		<field name="subject">Billing has been rejected</field>
+		<field name="email_to">${ctx.get('email_to')}</field>
+		<field name="model_id"   model="ir.model" search="[('model', '=', 'account.move')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma</p>
+			<p>Your billing has been rejected.</p>
+			<p></p>
+			<p><a href="${ctx.get('doc_link')}">Follow the link to proceed</a></p>
+			<p>Thanks</p>
+			]]>
+		</field>
+	</record>
+
+</odoo>

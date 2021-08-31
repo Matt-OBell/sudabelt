@@ -1,0 +1,57 @@
+<odoo>
+
+	<record id="purchase_approval_template" model="mail.template">
+		<field name="name" >Purchase Order Approval</field>
+		<field name="email_from">${object.company_id.email}</field>
+		<field name="subject">Purchase Order Approval request</field>
+		<field name="email_to">${ctx.get('email_to')|safe}</field>
+		<field name="model_id"   model="ir.model"  search="[('model', '=', 'purchase.order')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma,</p>
+			<p>The purchase order ${object.name} requires your approval. Kindly approve.</p>
+			<p>Regards and Thanks</p>
+			<p><a href="${ctx.get('url')}">Please follow the Link</a></p>
+			<p>System auto generated email</p>
+			]]>
+		</field>
+	</record>
+
+	<record id="purchase_order_approved" model="mail.template">
+		<field name="name" >P.O Approval</field>
+		<field name="email_from">${object.company_id.email}</field>
+		<field name="subject">Purchase Order has been approved</field>
+		<field name="email_to">${ctx.get('email_to')|safe}</field>
+		<field name="model_id" model="ir.model" search="[('model','=','purchase.order')]" />
+<!--				<field name="attachment_ids">email_template.attachment_ids = [(3, ids)]</field>-->
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma,</p>
+			<p>Your purchase order (${object.name}) has been approved</p>
+			<p>Regards</p>
+			<p>System auto generated email</p>
+			]]>
+		</field>
+	</record>
+
+	<record id="purchase_rejection_template" model="mail.template">
+		<field name="name" >Purchase Rejection</field>
+		<field name="email_from">${user.company_id.email}</field>
+		<field name="subject">Purchase Order has been rejected</field>
+		<field name="email_to">${ctx.get('email_to')}</field>
+		<field name="model_id"   model="ir.model" search="[('model', '=', 'purchase.order')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma</p>
+			<p>Your purchase order has been rejected.</p>
+			<p></p>
+			<p><a href="${ctx.get('doc_link')}">Follow the link to proceed</a></p>
+			<p>Thanks</p>
+			]]>
+		</field>
+	</record>
+
+</odoo>

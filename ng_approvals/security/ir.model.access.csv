@@ -1,0 +1,16 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_sale_popup_wizard_sale_manager","access_sale_popup_wizard_sale_manager","model_sale_reject_reason_wizard","ng_approvals.group_sale_manager",1,1,1,1
+"access_sale_popup_wizard_sale_general_manager","access_sale_popup_wizard_sale_general_manager","model_sale_reject_reason_wizard","ng_approvals.group_sale_general_manager",1,1,1,1
+"access_purchase_popup_wizard_internal_control","access_purchase_popup_wizard_internal_control","model_purchase_reject_reason_wizard","ng_approvals.group_internal_control",1,1,1,1
+"access_billing_popup_wizard_operation_manager","access_billing_popup_wizard_operation_manager","model_billing_reject_reason_wizard","ng_approvals.group_operation_manager",1,1,1,1
+"access_billing_popup_wizard_coo","access_billing_popup_wizard_coo","model_billing_reject_reason_wizard","ng_approvals.group_coo",1,1,1,1
+"access_billing_popup_wizard_finance_manager","access_billing_popup_wizard_finance_manager","model_billing_reject_reason_wizard","account.group_account_manager",1,1,1,1
+"access_sale_popup_wizard_finance_manager","access_sale_popup_wizard_finance_manager","model_sale_reject_reason_wizard","account.group_account_manager",1,1,1,1
+"sale_manager rejection.reason","sale_manager rejection.reason","model_reject_reason","ng_approvals.group_sale_manager",1,1,1,1
+"sale_manager_manager rejection.reason","sale_manager_manager rejection.reason","model_reject_reason","ng_approvals.group_sale_general_manager",1,1,1,1
+"internal_control rejection.reason","internal_control rejection.reason","model_reject_reason","ng_approvals.group_internal_control",1,1,1,1
+"operation_manager rejection.reason","operation_manager rejection.reason","model_reject_reason","ng_approvals.group_operation_manager",1,1,1,1
+"coo rejection.reason","coo rejection.reason","model_reject_reason","ng_approvals.group_coo",1,1,1,1
+"finance_manager rejection.reason","finance_manager rejection.reason","model_reject_reason","account.group_account_manager",1,1,1,1
+"access_purchase_popup_wizard","access_purchase_popup_wizard purchase_manager","model_purchase_reject_reason_wizard","purchase.group_purchase_manager",1,1,1,1
+"purchase_manager rejection.reason","purchase_manager rejection.reason","model_reject_reason","purchase.group_purchase_manager",1,1,1,1
