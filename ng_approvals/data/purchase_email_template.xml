@@ -11,8 +11,9 @@
 			<![CDATA[
 			<p>Dear Sir/Ma,</p>
 			<p>The purchase order ${object.name} requires your approval. Kindly approve.</p>
-			<p>Regards and Thanks</p>
+			<p></p>
 			<p><a href="${ctx.get('url')}">Please follow the Link</a></p>
+			<p>Thanks</p>
 			<p>System auto generated email</p>
 			]]>
 		</field>
@@ -30,7 +31,9 @@
 			<![CDATA[
 			<p>Dear Sir/Ma,</p>
 			<p>Your purchase order (${object.name}) has been approved</p>
-			<p>Regards</p>
+			<p></p>
+			<p><a href="${ctx.get('url')}">Follow the link to proceed</a></p>
+			<p>Thanks</p>
 			<p>System auto generated email</p>
 			]]>
 		</field>
@@ -48,8 +51,9 @@
 			<p>Dear Sir/Ma</p>
 			<p>Your purchase order has been rejected.</p>
 			<p></p>
-			<p><a href="${ctx.get('doc_link')}">Follow the link to proceed</a></p>
+			<p><a href="${ctx.get('url')}">Follow the link to proceed</a></p>
 			<p>Thanks</p>
+			<p>System auto generated email</p>
 			]]>
 		</field>
 	</record>

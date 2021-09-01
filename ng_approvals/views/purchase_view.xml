@@ -52,10 +52,11 @@
 <!--             </xpath>-->
 
 
-<!--             <xpath expr="//button[@name='button_cancel']" position="replace">-->
-<!--                &lt;!&ndash;<attribute name="states">''</attribute>&ndash;&gt;-->
+             <xpath expr="//button[@name='button_cancel']" position="replace">
+                 <button name="button_cancel" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent', 'purchase']), ('is_record_owner', '=', False)]}" string="Cancel" type="object" />
+<!--                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ['draft', 'sent', 'purchase']), ('is_record_owner', '=', False)]}</attribute>-->
 <!--                  <button name="button_cancel" states="sent" string="Cancel" type="object" />-->
-<!--             </xpath>-->
+             </xpath>
             <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="attrs">{'readonly': [('state', 'in', ['purchase', 'done', 'cancel', 'internal_control', 'to approve', 'rejected'])]}</attribute>
             </xpath>
@@ -72,6 +73,7 @@
                 <attribute name="attrs">{'readonly': [('state', 'in', ('done', 'cancel', 'internal_control', 'to approve', 'rejected'))]}</attribute>
             </xpath>
             <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="is_record_owner" invisible="1"/>
                 <field name="rejected_by" attrs="{'invisible': [('reject_reason', '=', False)]}"/>
                 <field name="reject_reason" attrs="{'invisible': [('reject_reason', '=', False)]}"/>
             </xpath>

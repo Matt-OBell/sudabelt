@@ -9,7 +9,7 @@
 <!--                <button name="action_confirm" states="draft" string="Confirm Sale" class="o_sale_confirm" type="object" invisible="1"/>-->
             </xpath>
             <xpath expr="//button[@name='action_cancel']" position="attributes">
-                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ['draft', 'sent', 'sale', 'approved']), ('id', '=', False), ('is_record_owner', '=', False)]}</attribute>
+                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ['draft', 'sent', 'sale', 'approved']), ('is_record_owner', '=', False)]}</attribute>
             </xpath>
             <xpath expr="//button[@name='action_confirm'][1]" position="replace">
                 <button name="action_confirm" id="action_confirm" data-hotkey="v" string="Confirm" class="btn-primary" type="object" attrs="{'invisible': ['|', ('state', 'not in', ['approved']), ('is_record_owner', '=', False)]}"/>
@@ -58,14 +58,26 @@
 <!--        </field>-->
 <!--    </record>-->
 
-    <record id="view_sales_order_filter_inherit" model="ir.ui.view">
-        <field name="name">sale.order.search.inherit.quotation</field>
+<!--    <record id="view_search_id" model="ir.ui.view">-->
+<!--        <field name="name">sale.order</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="type">search</field>-->
+<!--        <field name="inherit_id" ref="sale.view_sales_order_filter"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//group/filter" position="after">-->
+<!--                <filter string="Zone" name="zone" domain="[]" context="{'group_by': 'geo_zones'}"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <record id="view_search_id_inherit" model="ir.ui.view">
+        <field name="name">sale.order.inherit</field>
         <field name="model">sale.order</field>
-        <field name="mode">primary</field>
-        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        <field name="type">search</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
         <field name="arch" type="xml">
             <xpath expr="//group/filter[@name='salesperson']" position="after">
-                <filter string="Zone" name="zone" domain="[]" context="{'group_by': 'geo_zones'}"/>
+                <filter string="Zone" name="zone" domain="[]" context="{'group_by':'geo_zones'}"/>
             </xpath>
         </field>
     </record>
@@ -84,14 +96,14 @@
                 <separator/>
 <!--                <filter string="Zone" name="draft" domain="[('geo_zone','in',('draft', 'sent'))]"/>-->
             </xpath>
-            <xpath expr="//group/filter[@name='salesperson']" position="after">
-                <filter string="Zone" name="zone" domain="[]" context="{'group_by': 'geo_zones'}"/>
-            </xpath>
+<!--            <xpath expr="//group/filter[@name='salesperson']" position="after">-->
+<!--                <filter string="Zone" name="zone" domain="[]" context="{'group_by': 'geo_zones'}"/>-->
+<!--            </xpath>-->
         </field>
     </record>
 
     <record id="action_sale_approval" model="ir.actions.act_window">
-        <field name="name">Sales Approval</field>
+        <field name="name">Sales Approvals</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">sale.order</field>
         <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>

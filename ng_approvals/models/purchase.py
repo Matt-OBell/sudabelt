@@ -10,6 +10,8 @@ class PurchaseOrder(models.Model):
 
     rejected_by = fields.Many2one('res.users', readonly=True, copy=False)
     reject_reason = fields.Text(readonly=True, copy=False)
+    is_record_owner = fields.Boolean(
+        readonly=1, compute='_compute_record_owner', copy=False, store=False, default=False)
     is_my_approval = fields.Boolean(
         readonly=1, compute='_compute_approval_mode', copy=False, store=False, search="_search_field")
     order_line = fields.One2many('purchase.order.line', 'order_id', string='Order Lines',
@@ -28,6 +30,12 @@ class PurchaseOrder(models.Model):
         'cancel': [('readonly', True)],
         'rejected': [('readonly', True)],
     }
+
+    def _compute_record_owner(self):
+        if int(self.user_id) == int(self.env.uid):
+            self.is_record_owner = True
+        else:
+            self.is_record_owner = False
 
     def action_reject_approval(self):
         return {
@@ -79,9 +87,24 @@ class PurchaseOrder(models.Model):
         template.with_context(
             {
                 "email_to": email_to,
+                "url": self.request_link()
                 # "products": products
             }
         ).send_mail(self.id, force_send=True)
+
+    def request_link(self):
+        fragment = {}
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        model_data = self.env["ir.model.data"]
+        fragment.update(base_url=base_url)
+        fragment.update(menu_id=model_data.get_object_reference("ng_approvals", "menu_purchase_approval")[1])
+        fragment.update(model="purchase.order")
+        fragment.update(view_type="form")
+        fragment.update(action=model_data.get_object_reference("ng_approvals", "action_purchase_approval")[1])
+        fragment.update(id=self.id)
+        query = {"db": self.env.cr.dbname}
+        res = urljoin(base_url, "/web?%s#%s" % (urlencode(query), urlencode(fragment)))
+        return res
 
     def _compute_approval_mode(self):
         for record in self:

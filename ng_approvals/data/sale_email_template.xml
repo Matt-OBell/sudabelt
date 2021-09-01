@@ -12,8 +12,9 @@
 			<p>Dear Sir/Ma</p>
 			<p>The Sale Order requires your approval</p>
 			<p></p>
-			<p><a href="${ctx.get('doc_link')}">Follow the link</a></p>
+			<p><a href="${ctx.get('url')}">Follow the link</a></p>
 			<p>Thanks</p>
+			<p>System auto generated email</p>
 			]]>
 		</field>
 	</record>
@@ -30,8 +31,9 @@
 			<p>Dear Sir/Ma</p>
 			<p>Your sales order has been approved.</p>
 			<p></p>
-			<p><a href="${ctx.get('doc_link')}">Follow the link to proceed</a></p>
+			<p><a href="${ctx.get('url')}">Follow the link to proceed</a></p>
 			<p>Thanks</p>
+			<p>System auto generated email</p>
 			]]>
 		</field>
 	</record>
@@ -48,8 +50,9 @@
 			<p>Dear Sir/Ma</p>
 			<p>Your sales order has been rejected.</p>
 			<p></p>
-			<p><a href="${ctx.get('doc_link')}">Follow the link to proceed</a></p>
+			<p><a href="${ctx.get('url')}">Follow the link to proceed</a></p>
 			<p>Thanks</p>
+			<p>System auto generated email</p>
 			]]>
 		</field>
 	</record>

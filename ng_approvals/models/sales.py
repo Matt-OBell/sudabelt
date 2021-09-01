@@ -1,4 +1,5 @@
 from odoo import fields, api, models
+from urllib.parse import urljoin, urlencode
 from lxml import etree
 import simplejson
 
@@ -81,9 +82,24 @@ class SaleOrder(models.Model):
         template.with_context(
             {
                 "email_to": email_to,
+                "url": self.request_link()
                 # "products": products
             }
         ).send_mail(self.id, force_send=True)
+
+    def request_link(self):
+        fragment = {}
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        model_data = self.env["ir.model.data"]
+        fragment.update(base_url=base_url)
+        fragment.update(menu_id=model_data.get_object_reference("ng_approvals", "menu_sale_approval")[1])
+        fragment.update(model="sale.order")
+        fragment.update(view_type="form")
+        fragment.update(action=model_data.get_object_reference("ng_approvals", "action_sale_approval")[1])
+        fragment.update(id=self.id)
+        query = {"db": self.env.cr.dbname}
+        res = urljoin(base_url, "/web?%s#%s" % (urlencode(query), urlencode(fragment)))
+        return res
 
     def _compute_approval_mode(self):
         for record in self:

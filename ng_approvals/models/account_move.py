@@ -49,9 +49,24 @@ class AccountMove(models.Model):
         template.with_context(
             {
                 "email_to": email_to,
+                "url": self.request_link()
                 # "products": products
             }
         ).send_mail(self.id, force_send=True)
+
+    def request_link(self):
+        fragment = {}
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        model_data = self.env["ir.model.data"]
+        fragment.update(base_url=base_url)
+        fragment.update(menu_id=model_data.get_object_reference("account", "menu_action_move_in_invoice_type")[1])
+        fragment.update(model="account.move")
+        fragment.update(view_type="form")
+        fragment.update(action=model_data.get_object_reference("account", "action_move_in_invoice_type")[1])
+        fragment.update(id=self.id)
+        query = {"db": self.env.cr.dbname}
+        res = urljoin(base_url, "/web?%s#%s" % (urlencode(query), urlencode(fragment)))
+        return res
 
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
