@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hr_leave_view_form" model="ir.ui.view">
+        <field name="name">hr.leave.view.form</field>
+        <field name="model">hr.leave</field>
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_approve']" position="replace">
+                <button string="Approve"
+                        name="action_approve_coo"
+                        type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'in', ['confirm'])]}"/>
+            </xpath>
+            <xpath expr="//button[@name='action_approve']" position="after">
+                <button string="Approve"
+                        name="action_approve_coo"
+                        type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'in', ['validate_coo'])]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
