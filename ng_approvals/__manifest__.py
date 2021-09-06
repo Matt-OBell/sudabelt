@@ -12,6 +12,7 @@
         "security/approval_security.xml",
         "security/ir.model.access.csv",
         "data/account_email_template.xml",
+        "data/hr_email_template.xml",
         "data/purchase_email_template.xml",
         "data/sale_email_template.xml",
         "wizard/billing_popup_view.xml",

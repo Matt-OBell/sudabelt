@@ -54,23 +54,31 @@ class HolidaysRequest(models.Model):
             else:
                 holiday.can_approve = True
 
+    def _escalate(self, email_to, template='hr_approval_template'):
+        template = self.env['ir.model.data'].\
+            get_object('ng_approvals', template)
+        template.with_context(
+            {
+                "email_to": email_to,
+                # "url": self.request_link()
+                # "products": products
+            }
+        ).send_mail(self.id, force_send=True)
+
     def action_approve_coo(self):
         current_employee = self.env.user.employee_id
         self.filtered(lambda hol: hol.validation_type == 'both').action_approve()
         self.filtered(lambda hol: hol.validation_type == 'triple').write(
             {'state': 'validate_coo', 'first_approver_id': current_employee.id})
 
-        #  Post a second message, more verbose than the tracking message
-        for holiday in self.filtered(lambda holiday: holiday.employee_id.user_id):
-            holiday.message_post(
-                body=_('Your %s planned on %s has been accepted') % (
-                    holiday.holiday_status_id.display_name, holiday.date_from),
-                partner_ids=holiday.employee_id.user_id.partner_id.ids)
-
         self.filtered(lambda hol: not hol.validation_type in ['both', 'triple']).action_validate()
         #         self.filtered(lambda hol: not hol.validation_type == 'triple').action_validate()
         if not self.env.context.get('leave_fast_create'):
             self.activity_update()
+        users = self.env.ref("ng_approvals.group_coo").users
+        emails = [user.partner_id.email.strip() for user in users if user.partner_id.email]
+        emails = ",".join(emails)
+        self._escalate(emails)
         return True
 
     def action_approve(self):
