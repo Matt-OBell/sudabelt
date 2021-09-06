@@ -1,7 +1,24 @@
-from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+import logging
+import math
+
+from collections import namedtuple
+
+from datetime import datetime, date, timedelta, time
+from pytz import timezone, UTC
+
+from odoo import api, fields, models, SUPERUSER_ID, tools
+from odoo.addons.base.models.res_partner import _tz_get
+from odoo.addons.resource.models.resource import float_to_time, HOURS_PER_DAY
+from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tools import float_compare
+from odoo.tools.float_utils import float_round
+from odoo.tools.translate import _
+from odoo.osv import expression
+
 
 class HolidaysRequest(models.Model):
+    _inherit = 'hr.leave'
+
     second_approver_id = fields.Many2one(
         'hr.employee', string='COO Approval', readonly=True, copy=False,
         help='This area is automatically filled by the user who validate the time off with COO level (If time off type need second validation)')
@@ -11,16 +28,31 @@ class HolidaysRequest(models.Model):
     state = fields.Selection([
         ('draft', 'To Submit'),
         ('cancel', 'Cancelled'),  # YTI This state seems to be unused. To remove
-        ('confirm', 'To Approve'),
+        ('confirm', 'Team Lead Approval'),
+        ('validate_coo', 'COO Approval'),
+        ('validate1', 'HR Approval'),
+        ('validate', 'Approved'),
         ('refuse', 'Refused'),
-        ('validate_coo', 'Approval'),
-        ('validate1', 'COO Approval'),
-        ('validate', 'Approved')
     ], string='Status', readonly=True, tracking=True, copy=False, default='draft',
         help="The status is set to 'To Submit', when a time off request is created." +
              "\nThe status is 'To Approve', when time off request is confirmed by user." +
              "\nThe status is 'Refused', when time off request is refused by manager." +
              "\nThe status is 'Approved', when time off request is approved by manager.")
+
+    @api.depends('state', 'employee_id', 'department_id')
+    def _compute_can_approve(self):
+        for holiday in self:
+            try:
+                if holiday.state == 'confirm' and holiday.holiday_status_id.validation_type == 'both':
+                    holiday._check_approval_update('validate1')
+                elif holiday.state == 'confirm' and holiday.holiday_status_id.validation_type == 'triple':
+                    holiday._check_approval_update('validate_coo')
+                else:
+                    holiday._check_approval_update('validate')
+            except (AccessError, UserError):
+                holiday.can_approve = False
+            else:
+                holiday.can_approve = True
 
     def action_approve_coo(self):
         current_employee = self.env.user.employee_id
@@ -28,10 +60,27 @@ class HolidaysRequest(models.Model):
         self.filtered(lambda hol: hol.validation_type == 'triple').write(
             {'state': 'validate_coo', 'first_approver_id': current_employee.id})
 
+        #  Post a second message, more verbose than the tracking message
+        for holiday in self.filtered(lambda holiday: holiday.employee_id.user_id):
+            holiday.message_post(
+                body=_('Your %s planned on %s has been accepted') % (
+                    holiday.holiday_status_id.display_name, holiday.date_from),
+                partner_ids=holiday.employee_id.user_id.partner_id.ids)
+
+        self.filtered(lambda hol: not hol.validation_type in ['both', 'triple']).action_validate()
+        #         self.filtered(lambda hol: not hol.validation_type == 'triple').action_validate()
+        if not self.env.context.get('leave_fast_create'):
+            self.activity_update()
+        return True
+
     def action_approve(self):
         # if validation_type == 'both': this method is the first approval approval
         # if validation_type != 'both': this method calls action_validate() below
-        if any(holiday.state != 'confirm' for holiday in self):
+        if any(holiday.holiday_status_id.validation_type == 'triple' and holiday.state != 'validate_coo' for holiday in
+               self):
+            raise UserError(_('Time off request must be confirmed ("To Approve") in order to approve it.'))
+        elif any(holiday.holiday_status_id.validation_type != 'triple' and holiday.state != 'confirm' for holiday in
+                 self):
             raise UserError(_('Time off request must be confirmed ("To Approve") in order to approve it.'))
 
         current_employee = self.env.user.employee_id
@@ -44,11 +93,11 @@ class HolidaysRequest(models.Model):
         for holiday in self.filtered(lambda holiday: holiday.employee_id.user_id):
             holiday.message_post(
                 body=_('Your %s planned on %s has been accepted') % (
-                holiday.holiday_status_id.display_name, holiday.date_from),
+                    holiday.holiday_status_id.display_name, holiday.date_from),
                 partner_ids=holiday.employee_id.user_id.partner_id.ids)
 
-        self.filtered(lambda hol: not hol.validation_type == 'both').action_validate()
-        self.filtered(lambda hol: not hol.validation_type == 'triple').action_validate()
+        self.filtered(lambda hol: not hol.validation_type in ['both', 'triple']).action_validate()
+        #         self.filtered(lambda hol: not hol.validation_type == 'triple').action_validate()
         if not self.env.context.get('leave_fast_create'):
             self.activity_update()
         return True
