@@ -7,6 +7,12 @@ import simplejson
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    sale_manager_approve_by = fields.Many2one(
+        'res.users', string='Sale Manager Approved by', readonly=True, copy=False)
+    general_manager_approve_by = fields.Many2one(
+        'res.users', string='General Manager Approved by', readonly=True, copy=False)
+    finance_manager_approve_by = fields.Many2one(
+        'res.users', string='Finance Manager Approved by', readonly=True, copy=False)
     reject_reason = fields.Text(readonly=True, copy=False)
     rejected_by = fields.Many2one('res.users', readonly=True, copy=False)
     is_record_owner = fields.Boolean(
@@ -52,6 +58,7 @@ class SaleOrder(models.Model):
 
     def action_general_manager_approval(self):
         self.state = "general_manager"
+        self.sale_manager_approve_by = self.env.uid
         users = self.env.ref("ng_approvals.group_sale_general_manager").users
         emails = [user.partner_id.email.strip() for user in users if user.partner_id.email]
         emails = ",".join(emails)
@@ -59,6 +66,7 @@ class SaleOrder(models.Model):
 
     def action_account_manager_approval(self):
         self.state = "account_manager"
+        self.general_manager_approve_by = self.env.uid
         users = self.env.ref("account.group_account_manager").users
         emails = [user.partner_id.email.strip() for user in users if user.partner_id.email]
         emails = ",".join(emails)
@@ -66,6 +74,7 @@ class SaleOrder(models.Model):
 
     def action_approved(self):
         self.state = "approved"
+        self.finance_manager_approve_by = self.env.uid
         emails = [self.user_id.login.strip()]
         emails = ",".join(emails)
         self._escalate(emails, 'sale_owner_approval_template')

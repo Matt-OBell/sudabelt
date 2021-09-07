@@ -77,6 +77,10 @@
                 <field name="rejected_by" attrs="{'invisible': [('reject_reason', '=', False)]}"/>
                 <field name="reject_reason" attrs="{'invisible': [('reject_reason', '=', False)]}"/>
             </xpath>
+            <xpath expr="//notebook/page[@name='purchase_delivery_invoice']/group/group[@name='other_info']/field[@name='company_id']" position="after">
+                <field name="first_approve_by" attrs="{'invisible': [('first_approve_by', '=', False)]}"/>
+                <field name="second_manager_approve_by" attrs="{'invisible': [('second_manager_approve_by', '=', False)]}"/>
+            </xpath>
         </field>
     </record>
 

@@ -22,6 +22,7 @@
         "views/account_move_view.xml",
         "views/sales_order_view.xml",
         "views/purchase_view.xml",
+        "views/hr_leave_views.xml"
     ],
     "demo": [],
     "test": [],

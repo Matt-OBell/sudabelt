@@ -8,6 +8,12 @@ import base64
 class AccountMove(models.Model):
     _inherit = "account.move"
 
+    first_manager_approve_by = fields.Many2one(
+        'res.users', string='Operation Manager Approved by', readonly=True, copy=False)
+    second_manager_approve_by = fields.Many2one(
+        'res.users', string='COO Approved by', readonly=True, copy=False)
+    finance_manager_approve_by = fields.Many2one(
+        'res.users', string='Finance Manager Approved by', readonly=True, copy=False)
     rejected_by = fields.Many2one('res.users', readonly=True, copy=False)
     reject_reason = fields.Text(readonly=True, copy=False)
 
@@ -20,6 +26,7 @@ class AccountMove(models.Model):
 
     def action_coo_approval(self):
         self.state = 'coo'
+        self.first_manager_approve_by = self.env.uid
         users = self.env.ref("ng_approvals.group_coo").users
         recipients = [user.partner_id.email.strip() for user in users if user.partner_id.email]
         recipients = ",".join(recipients)
@@ -27,6 +34,7 @@ class AccountMove(models.Model):
 
     def action_financial_manager_approval(self):
         self.state = 'finance_manager'
+        self.second_manager_approve_by = self.env.uid
         users = self.env.ref("account.group_account_manager").users
         recipients = [user.partner_id.email.strip() for user in users if user.partner_id.email]
         recipients = ",".join(recipients)
@@ -37,6 +45,7 @@ class AccountMove(models.Model):
             self.state = 'operation_manager'
         else:
             purchase = super(AccountMove, self).action_post()
+            self.finance_manager_approve_by = self.env.uid
             # recipient = [self.user_id.login.strip()]
             # recipient = ",".join(recipient)
             # self._escalate(recipient, 'billing_approved')

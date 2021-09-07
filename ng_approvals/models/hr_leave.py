@@ -67,12 +67,12 @@ class HolidaysRequest(models.Model):
 
     def action_approve_coo(self):
         current_employee = self.env.user.employee_id
-        self.filtered(lambda hol: hol.leave_validation_type == 'both').action_approve()
-        self.filtered(lambda hol: hol.leave_validation_type == 'triple').write(
+        self.filtered(lambda hol: hol.validation_type == 'both').action_approve()
+        self.filtered(lambda hol: hol.validation_type == 'triple').write(
             {'state': 'validate_coo', 'first_approver_id': current_employee.id})
 
-        self.filtered(lambda hol: not hol.leave_validation_type in ['both', 'triple']).action_validate()
-        #         self.filtered(lambda hol: not hol.leave_validation_type == 'triple').action_validate()
+        self.filtered(lambda hol: not hol.validation_type in ['both', 'triple']).action_validate()
+        #         self.filtered(lambda hol: not hol.validation_type == 'triple').action_validate()
         if not self.env.context.get('leave_fast_create'):
             self.activity_update()
         users = self.env.ref("ng_approvals.group_coo").users
@@ -82,19 +82,23 @@ class HolidaysRequest(models.Model):
         return True
 
     def action_approve(self):
-        # if leave_validation_type == 'both': this method is the first approval approval
-        # if leave_validation_type != 'both': this method calls action_validate() below
+        # if validation_type == 'both': this method is the first approval approval
+        # if validation_type != 'both': this method calls action_validate() below
         if any(holiday.holiday_status_id.leave_validation_type == 'triple' and holiday.state != 'validate_coo' for holiday in
                self):
             raise UserError(_('Time off request must be confirmed ("To Approve") in order to approve it.'))
+        elif any(holiday.holiday_status_id.leave_validation_type == 'triple' and 
+                 not self.env.user.has_group('ng_approvals.group_coo') for holiday in self):
+            raise UserError('You do not have the privilege to approve the Time Off. '
+                            'Contact your administrator for assistance')
         elif any(holiday.holiday_status_id.leave_validation_type != 'triple' and holiday.state != 'confirm' for holiday in
                  self):
             raise UserError(_('Time off request must be confirmed ("To Approve") in order to approve it.'))
 
         current_employee = self.env.user.employee_id
-        self.filtered(lambda hol: hol.leave_validation_type == 'both').write(
+        self.filtered(lambda hol: hol.validation_type == 'both').write(
             {'state': 'validate1', 'first_approver_id': current_employee.id})
-        self.filtered(lambda hol: hol.leave_validation_type == 'triple').write(
+        self.filtered(lambda hol: hol.validation_type == 'triple').write(
             {'state': 'validate1', 'second_approver_id': current_employee.id})
 
         # Post a second message, more verbose than the tracking message
@@ -104,8 +108,8 @@ class HolidaysRequest(models.Model):
                     holiday.holiday_status_id.display_name, holiday.date_from),
                 partner_ids=holiday.employee_id.user_id.partner_id.ids)
 
-        self.filtered(lambda hol: not hol.leave_validation_type in ['both', 'triple']).action_validate()
-        #         self.filtered(lambda hol: not hol.leave_validation_type == 'triple').action_validate()
+        self.filtered(lambda hol: not hol.validation_type in ['both', 'triple']).action_validate()
+        #         self.filtered(lambda hol: not hol.validation_type == 'triple').action_validate()
         if not self.env.context.get('leave_fast_create'):
             self.activity_update()
         return True
@@ -116,11 +120,11 @@ class HolidaysRequest(models.Model):
             raise UserError(_('Time off request must be confirmed in order to approve it.'))
 
         self.write({'state': 'validate'})
-        self.filtered(lambda holiday: holiday.leave_validation_type == 'both').write(
+        self.filtered(lambda holiday: holiday.validation_type == 'both').write(
             {'second_approver_id': current_employee.id})
-        self.filtered(lambda holiday: holiday.leave_validation_type != 'both').write(
+        self.filtered(lambda holiday: holiday.validation_type != 'both').write(
             {'first_approver_id': current_employee.id})
-        self.filtered(lambda holiday: holiday.leave_validation_type == 'triple').write(
+        self.filtered(lambda holiday: holiday.validation_type == 'triple').write(
             {'third_approver_id': current_employee.id})
 
         for holiday in self.filtered(lambda holiday: holiday.holiday_type != 'employee'):
@@ -212,5 +216,5 @@ class HolidaysRequest(models.Model):
         employee_requests = self.filtered(lambda hol: hol.holiday_type == 'employee')
         employee_requests._validate_leave_request()
         if not self.env.context.get('leave_fast_create'):
-            employee_requests.filtered(lambda holiday: holiday.leave_validation_type != 'no_validation').activity_update()
+            employee_requests.filtered(lambda holiday: holiday.validation_type != 'no_validation').activity_update()
         return True

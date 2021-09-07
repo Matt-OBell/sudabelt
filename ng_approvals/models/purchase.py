@@ -8,6 +8,10 @@ import base64
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
+    first_approve_by = fields.Many2one(
+        'res.users', string='Internal Control Approved By', readonly=True, copy=False)
+    second_manager_approve_by = fields.Many2one(
+        'res.users', string='Process Manager Approved By', readonly=True, copy=False)
     rejected_by = fields.Many2one('res.users', readonly=True, copy=False)
     reject_reason = fields.Text(readonly=True, copy=False)
     is_record_owner = fields.Boolean(
@@ -67,6 +71,7 @@ class PurchaseOrder(models.Model):
                     or order.user_has_groups('purchase.group_purchase_manager'):
                 order.button_approve()
             else:
+                self.first_approve_by = self.env.uid
                 users = self.env.ref("purchase.group_purchase_manager").users
                 recipients = [user.partner_id.email.strip() for user in users if user.partner_id.email]
                 recipients = ",".join(recipients)
@@ -76,6 +81,7 @@ class PurchaseOrder(models.Model):
 
     def button_approve(self, force=False):
         purchase = super(PurchaseOrder, self).button_approve(force)
+        self.second_manager_approve_by = self.env.uid
         recipient = [self.user_id.login.strip()]
         recipient = ",".join(recipient)
         self._escalate(recipient, 'purchase_order_approved')

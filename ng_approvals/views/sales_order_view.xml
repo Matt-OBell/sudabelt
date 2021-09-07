@@ -34,6 +34,13 @@
             <xpath expr="//notebook/page/field[@name='order_line']" position="attributes">
                 <attribute name="attrs">{'readonly': [('state', 'in', ('done','cancel','sales_manager','general_manager','account_manager','rejected'))]}</attribute>
             </xpath>
+            <xpath expr="//notebook/page[@name='other_information']/group/group[@name='sales_person']" position="after">
+                <group name="approvals" string="Approvers">
+                    <field name="sale_manager_approve_by"/>
+                    <field name="general_manager_approve_by" attrs="{'invisible': [('general_manager_approve_by', '=', False)]}"/>
+                    <field name="finance_manager_approve_by" attrs="{'invisible': [('finance_manager_approve_by', '=', False)]}"/>
+                </group>
+            </xpath>
         </field>
     </record>
 

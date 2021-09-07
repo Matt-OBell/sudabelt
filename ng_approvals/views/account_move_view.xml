@@ -76,6 +76,13 @@
                 <field name="rejected_by" attrs="{'invisible': [('reject_reason', '=', False)]}"/>
                 <field name="reject_reason" attrs="{'invisible': [('reject_reason', '=', False)]}"/>
             </xpath>
+            <xpath expr="//group[@id='other_tab_group']/group[@name='utm_link']" position="after">
+                <group name="approvals" string="Approvers">
+                    <field name="first_manager_approve_by"/>
+                    <field name="second_manager_approve_by" attrs="{'invisible': [('second_manager_approve_by', '=', False)]}"/>
+                    <field name="finance_manager_approve_by" attrs="{'invisible': [('finance_manager_approve_by', '=', False)]}"/>
+                </group>
+            </xpath>
         </field>
     </record>
 </odoo>
