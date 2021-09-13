@@ -4,7 +4,7 @@
         <field name="name">purchase.reject.reason.form</field>
         <field name="model">purchase.reject.reason.wizard</field>
         <field name="arch" type="xml">
-        <form string="Purchase Approval Reason">
+        <form string="Purchase Rejection Reason">
             <group>
                 <h3>
                     Are you sure you want to reject this purchase order?

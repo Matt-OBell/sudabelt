@@ -1,0 +1,56 @@
+<odoo>
+
+	<record id="stock_approval_template" model="mail.template">
+		<field name="name" >Inventory Adjustment Approval</field>
+		<field name="email_from">${user.company_id.email}</field>
+		<field name="subject">Request for Approval</field>
+		<field name="email_to">${ctx.get('email_to')}</field>
+		<field name="model_id"   model="ir.model" search="[('model', '=', 'stock.inventory')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma</p>
+			<p>The Inventory Adjustment requires your approval</p>
+			<p></p>
+			<p>Thanks</p>
+			<p>System auto generated email</p>
+			]]>
+		</field>
+	</record>
+
+	<record id="stock_owner_approval_template" model="mail.template">
+		<field name="name" >Inventory Adjustment Approved</field>
+		<field name="email_from">${user.company_id.email}</field>
+		<field name="subject">Inventory adjustment has been approved</field>
+		<field name="email_to">${ctx.get('email_to')}</field>
+		<field name="model_id"   model="ir.model" search="[('model', '=', 'stock.inventory')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma</p>
+			<p>Your Inventory Adjustment has been approved.</p>
+			<p></p>
+			<p>Thanks</p>
+			<p>System auto generated email</p>
+			]]>
+		</field>
+	</record>
+
+	<record id="stock_rejection_template" model="mail.template">
+		<field name="name" >Inventory Adjustment Rejection</field>
+		<field name="email_from">${user.company_id.email}</field>
+		<field name="subject">Inventory Adjustment has been rejected</field>
+		<field name="email_to">${ctx.get('email_to')}</field>
+		<field name="model_id"   model="ir.model" search="[('model', '=', 'stock.inventory')]" />
+		<field name="auto_delete" eval="True"/>
+		<field name="body_html">
+			<![CDATA[
+			<p>Dear Sir/Ma</p>
+			<p>Your Inventory Adjustment has been rejected.</p>
+			<p></p>
+			<p>Thanks</p>
+			<p>System auto generated email</p>
+			]]>
+		</field>
+	</record>
+</odoo>

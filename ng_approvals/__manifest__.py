@@ -7,7 +7,7 @@
     "website": "https://www.mattobell.com",
     "summary": "This module adds double level of approval to sale/ Purchase/ billing module",
     "sequence": 1,
-    "depends": ["sale", "stock", "account", "purchase"],
+    "depends": ["sale", "stock", "account", "purchase", "hr_holidays"],
     "data": [
         "security/approval_security.xml",
         "security/ir.model.access.csv",
@@ -15,14 +15,21 @@
         "data/hr_email_template.xml",
         "data/purchase_email_template.xml",
         "data/sale_email_template.xml",
+        "data/stock_email_template.xml",
         "wizard/billing_popup_view.xml",
         "wizard/purchase_popup_view.xml",
         "wizard/sales_popup_view.xml",
+        "wizard/stock_popup_view.xml",
         "views/reject_reason_view.xml",
         "views/account_move_view.xml",
         "views/sales_order_view.xml",
         "views/purchase_view.xml",
-        "views/hr_leave_views.xml"
+        "views/hr_leave_views.xml",
+        # "views/stock_template.xml",
+        "views/stock_inventory_view.xml"
+    ],
+    'qweb': [
+        # 'static/src/xml/inventory_lines.xml',
     ],
     "demo": [],
     "test": [],

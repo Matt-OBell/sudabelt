@@ -4,7 +4,7 @@
         <field name="name">sale.reject.reason.form</field>
         <field name="model">sale.reject.reason.wizard</field>
         <field name="arch" type="xml">
-        <form string="Sale Approval Reason">
+        <form string="Sale Rejection Reason">
             <group>
                 <h3>
                     Are you sure you want to reject this sales order?

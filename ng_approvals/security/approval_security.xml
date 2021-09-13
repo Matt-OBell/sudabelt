@@ -15,6 +15,10 @@
         <field name="name">Operation Manager</field>
     </record>
 
+    <record id="group_inventory_manager" model="res.groups">
+        <field name="name">Inventory Manager</field>
+    </record>
+
     <record id="group_coo" model="res.groups">
         <field name="name">COO Approval</field>
     </record>
