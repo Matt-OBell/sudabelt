@@ -14,5 +14,3 @@
 "finance_manager rejection.reason","finance_manager rejection.reason","model_reject_reason","account.group_account_manager",1,1,1,1
 "access_purchase_popup_wizard","access_purchase_popup_wizard purchase_manager","model_purchase_reject_reason_wizard","purchase.group_purchase_manager",1,1,1,1
 "purchase_manager rejection.reason","purchase_manager rejection.reason","model_reject_reason","purchase.group_purchase_manager",1,1,1,1
-"Inventory_manager stock_inventory","Inventory_manager stock_inventory","model_stock_inventory","ng_approvals.group_inventory_manager",1,1,1,1
-"inventory_manager rejection.reason","inventory_manager rejection.reason","model_reject_reason","ng_approvals.group_inventory_manager",1,1,1,1
