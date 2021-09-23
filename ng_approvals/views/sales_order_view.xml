@@ -83,7 +83,8 @@
         <field name="type">search</field>
         <field name="inherit_id" ref="sale.view_sales_order_filter"/>
         <field name="arch" type="xml">
-            <xpath expr="//group/filter[@name='salesperson']" position="after">
+            <xpath expr="//group/filter[@name='customer']" position="after">
+                <filter string="Customer's State" name="group_partner_state" domain="[]" context="{'group_by': 'partner_state_id'}"/>
                 <filter string="Zone" name="zone" domain="[]" context="{'group_by':'geo_zones'}"/>
             </xpath>
         </field>

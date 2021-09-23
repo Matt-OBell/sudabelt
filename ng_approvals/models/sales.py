@@ -19,6 +19,8 @@ class SaleOrder(models.Model):
         readonly=1, compute='_compute_record_owner', copy=False, store=False, default=False)
     is_my_approval = fields.Boolean(
         readonly=1, compute='_compute_approval_mode', copy=False, store=False, search="_search_field")
+    partner_state_id = fields.Many2one(
+        'res.country.state', related='partner_id.state_id', store=True)
     geo_zones = fields.Selection([
         ('north_central', 'North Central'),
         ('north_east', 'North East'),
@@ -26,7 +28,7 @@ class SaleOrder(models.Model):
         ('south_east', 'South East'),
         ('south_south', 'South South'),
         ('south_west', 'South West')
-    ], string="Zone", required=1,
+    ], string="Zone", required=1, default=False,
         states={
              'sales_manager': [('readonly', True)],
              'general_manager': [('readonly', True)],
