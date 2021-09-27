@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <report
+        id="hr_payslip_report"
+        model="ng.hr.payslip.wizard"
+        string="Payslip Report"
+        report_type="qweb-pdf"
+        name="ng_hr_payroll_reports.view_hr_payslip_report"
+        file="ng_hr_payroll_reports.view_hr_payslip_report"
+        attachment_use="False"
+     />
+
+    <report
+        id="hr_payslip_report_excel"
+        model="ng.hr.payslip.wizard"
+        string="Print to XLSX"
+        report_type="xlsx"
+        name="ng_hr_payroll_reports.hr_payroll_report_excel"
+        file="payslip"
+        attachment_use="False"
+    />
+</odoo>
