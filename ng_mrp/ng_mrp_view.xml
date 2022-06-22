@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record id="view_move_form_analytic" model="ir.ui.view">
+			<field name="name">stock.move.form</field>
+			<field name="model">stock.move</field>
+			<field name="inherit_id" ref="stock.view_move_form" />
+			<field name="arch" type="xml">
+				<field name="location_id" position="after">
+					<field name="analytic_account_id" groups="analytic.group_analytic_accounting" />
+				</field>
+			</field>
+		</record>
+
+
+		<record id="view_move_tree" model="ir.ui.view">
+			<field name="name">stock.move.tree</field>
+			<field name="model">stock.move</field>
+			<field name="inherit_id" ref="stock.view_move_tree" />
+			<field name="arch" type="xml">
+                <field name="product_uom_qty" position="after">
+                    <field name="move_average_cost"/>
+                    <field name="move_cost"/>
+                </field>
+				<!--<field name="location_id" position="after">-->
+					<!--<field name="analytic_account_id" groups="analytic.group_analytic_accounting" />-->
+				<!--</field>-->
+			</field>
+		</record>
+
+
+		<record id="view_move_picking_form_analytic" model="ir.ui.view">
+			<field name="name">stock.move.form</field>
+			<field name="model">stock.move</field>
+			<field name="inherit_id" ref="stock.view_move_picking_form" />
+			<field name="arch" type="xml">
+				<field name="location_id" position="after">
+					<field name="analytic_account_id" groups="analytic.group_analytic_accounting" />
+				</field>
+			</field>
+		</record>
+
+		<record id="mrp_production_form_view_cost_wc" model="ir.ui.view">
+			<field name="name">mrp.production.form</field>
+			<field name="model">mrp.production</field>
+			<field name="inherit_id" ref="mrp.mrp_production_form_view" />
+			<field name="arch" type="xml">
+                <field name="origin" position="after">
+					<field name="analytic_account_id" />
+					<field name="total_cost_wc" />
+					<field name="raw_cost" />
+					<field name="total_cost" />
+					<field name="total_cost_unit" />
+				</field>
+
+
+                <field name="state" position="replace">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,confirmed,progress,done"/>
+                </field>
+
+                <button name="action_cancel" position="before">
+                    <button name="next_stage" type="object" string="Submit" attrs="{'invisible': [('state', 'not in', 'draft')]}" class="oe_highlight"/>
+                </button>
+
+                 <button name="button_plan" position="before">
+                    <button name="generate_materials" type="object" string="Generate Materials" attrs="{'invisible': [('state', 'not in', 'submitted')]}" class="oe_highlight"/>
+                </button>
+
+
+                <xpath expr="//field[@name='product_id']" position="replace">
+                    <field name="product_id" attrs="{'readonly': [('has_moves', '=', True), ('state', '!=', 'confirmed')]}" domain="[('bom_ids', '!=', False)]"/>
+                </xpath>
+
+                <xpath expr="//field[@name='product_qty']" position="replace">
+                    <field name="product_qty" attrs="{'readonly': [('has_moves', '=', True), ('state', '!=', 'confirmed')]}"/>
+                </xpath>
+
+
+                 <xpath expr="//field[@name='product_uom_id']" position="replace">
+                    <field name="product_uom_id" attrs="{'readonly': [('has_moves', '=', True), ('state', '!=', 'confirmed')]}"/>
+                </xpath>
+
+
+                <xpath expr="//field[@name='bom_id']" position="replace">
+                    <field name="bom_id" attrs="{'readonly': [('has_moves', '=', True), ('state', '!=', 'confirmed')]}"
+						   domain="['&amp;', '|',
+                                            ('product_id','=',product_id),
+                                            '&amp;',
+                                                ('product_tmpl_id.product_variant_ids','=',product_id),
+                                                ('product_id','=',False),
+                                                ('type', '=', 'normal')]" context="{'default_product_tmpl_id': product_tmpl_id}"/>
+                </xpath>
+
+
+                <xpath expr="//field[@name='company_id']" position="replace">
+                    <field name="company_id" attrs="{'readonly': [('has_moves', '=', True), ('state', '!=', 'confirmed')]}"/>
+                </xpath>
+
+
+
+            </field>
+		</record>
+		
+		<record model="ir.ui.view" id="mrp_production_form_view_loss_line">
+			<field name="name">mrp.production.ng</field>
+			<field name="inherit_id" ref="mrp.mrp_production_form_view" />
+			<field name="model">mrp.production</field>
+			<field name="arch" type="xml">
+				<data>
+				    <xpath expr="//page[2]" position="before">
+				        <page string="Product Gain/Loss">
+                            <group col="4" colspan="4">
+                                <field name="move_loss_ids" nolabel="1" />
+                            </group>
+                        </page>
+				    </xpath>
+				</data>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="mrp_routing_form_view_account_row">
+			<field name="name">mrp.routing</field>
+			<field name="inherit_id" ref="mrp.mrp_routing_form_view" />
+			<field name="model">mrp.routing</field>
+			<field name="arch" type="xml">
+				<data>
+					<field name="location_id" position="after">
+						<field name="journal_id" />
+						<field name="writeoff_account_id" />
+					</field>
+				</data>
+			</field>
+		</record>
+
+		<record id="mrp_workcenter_view_cost_account" model="ir.ui.view">
+			<field name="name">mrp.workcenter.form</field>
+			<field name="model">mrp.workcenter</field>
+			<field name="inherit_id" ref="mrp.mrp_workcenter_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//group[1]" position="inside">
+					<header>
+						<button name="button_confirm" type='object' states="draft" string="Compute" class="oe_highlight" />
+						<button name="button_draft" states="computed" string="Reset to Draft" type="object" class="oe_highlight" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,computed" />
+					</header>
+				</xpath>
+				<xpath expr="//notebook/page/group[1]" position="after">
+					<group string="Costing Information">
+						<group>
+							<field name="labor_cost"/>
+							<field name="labor_cost_account_id" groups="analytic.group_analytic_accounting" />
+							<field name="labor_cost_id" />
+							<field name="electric_cost" />
+							<field name="electric_cost_account_id" groups="analytic.group_analytic_accounting" />
+							<field name="electric_cost_id" />
+							<field name="consumables_cost" />
+						</group>
+						<group>
+							<field name="consumables_cost_account_id" groups="analytic.group_analytic_accounting" />
+							<field name="consumables_cost_id" />
+							<field name="rent_cost" />
+							<field name="rent_cost_account_id" groups="analytic.group_analytic_accounting" />
+							<field name="rent_cost_id" />
+							<field name="other_cost" />
+							<field name="other_cost_account_id" groups="analytic.group_analytic_accounting" />
+							<field name="other_cost_id" />
+						</group>
+					</group>
+				</xpath>
+
+				<field name="code" position="after">
+					<field name="type" />
+					<field name="parent_id" attrs="{'readonly':[('type','=','view')]}" />
+					<field name="wip_account_id" attrs="{'readonly':[('type','=','view')]}" />
+				</field>
+
+				<!--<label for="note" position="before"-->
+				<xpath expr="//notebook/page/separator[1]" position="before">
+					<separator colspan="4" string='Distribution Child Work Centers Accounts' attrs="{'invisible':[('type','=','normal')]}" />
+					<field name="workcenter_ids" attrs="{'invisible':[('type','=','normal')]}">
+						<tree string='Child Workcenters'>
+							<field name="workcenter_id" />
+						</tree>
+						<form string='Child Workcenters'>
+							<group>
+								<group>
+									<field name="workcenter_id" on_change="onchange_wc(workcenter_id)" />
+								</group>
+								<group string='Labor Cost' colspan="4">
+									<field name="labor_cost_account_id" groups="analytic.group_analytic_accounting" />
+									<field name="labor_cost" />
+									<field name="labor_cost1" />
+								</group>
+								<group string='Electric Cost' colspan="4">
+									<field name="electric_cost_account_id" groups="analytic.group_analytic_accounting" />
+									<field name="electric_cost" />
+									<field name="electric_cost1" />
+								</group>
+
+								<group string='Consumable Cost' colspan="4">
+									<field name="consumables_cost_account_id" groups="analytic.group_analytic_accounting" />
+									<field name="consumables_cost" />
+									<field name="consumables_cost1" />
+								</group>
+
+								<group string='Rent Cost' colspan="4">
+									<field name="rent_cost_account_id" groups="analytic.group_analytic_accounting" />
+									<field name="rent_cost" />
+									<field name="rent_cost1" />
+								</group>
+
+								<group string='Other Cost' colspan="4">
+									<field name="other_cost_account_id" groups="analytic.group_analytic_accounting" />
+									<field name="other_cost" />
+									<field name="other_cost1" />
+								</group>
+
+								<group string='Cost Hour Account' colspan="4">
+									<field name="costs_hour_account_id" groups="analytic.group_analytic_accounting" />
+									<field name="costs_hour" />
+									<field name="costs_hour1" />
+								</group>
+
+								<group string='Cost Cycle Account' colspan="4">
+									<field name="costs_cycle_account_id" groups="analytic.group_analytic_accounting" />
+									<field name="costs_cycle" />
+									<field name="costs_cycle1" />
+								</group>
+							</group>
+						</form>
+					</field>
+				</xpath>
+
+                <field name="time_start" position="replace">
+                    <field name="time_start" widget="float_time" />
+                </field>
+
+                 <field name="time_stop" position="replace">
+                    <field name="time_stop" widget="float_time" />
+                </field>
+
+                <field name="time_efficiency" position="replace">
+                    <field name="time_efficiency" widget="float_time" />
+                </field>
+
+				<!--<xpath expr="//notebook/page[1]/group" position="replace">-->
+					<!--<group attrs="{'invisible':[('type','=','view')]}" string="Capacity Information">-->
+						<!--<group>-->
+							<!--<field name="time_efficiency" />-->
+							<!--<field name="capacity_per_cycle" />-->
+							<!--<field name="time_cycle" widget="float_time" />-->
+						<!--</group>-->
+						<!--<group>-->
+							<!--<field name="time_start" widget="float_time" />-->
+							<!--<field name="time_stop" widget="float_time" />-->
+							<!--<field name="capacity" />-->
+						<!--</group>-->
+					<!--</group>-->
+                <!--</xpath>-->
+
+				<field name="name" position="after">
+					<field name="active" attrs="{'invisible':[('type','=','view')]}" />
+				</field>
+
+				<field name="note" position="after">
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" />
+						<field name="message_ids" colspan="4" widget="mail_thread" nolabel="1" />
+					</div>
+				</field>
+			</field>
+		</record>
+
+	</data>
+</odoo>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="hr_contract_form_allow_inherit_amount" model="ir.ui.view">
+            <field name="name">hr.contract.form.inherit.amount</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_payroll.hr_contract_form_inherit" />
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='struct_id']" position="after">
+                        <group col="2" colspan="2" name="right_column">
+                            <separator colspan="2" string="Allowance Amount" />
+                            <field name="basic_amount" />
+                            <field name="hra_amount" />
+                            <field name="utility_amount" />
+                            <field name="meal_amount" />
+                            <field name="entertain_amount" />
+                            <field name="transport_amount" />
+                            <field name="leave_allowance_amount" />
+                            <field name="bonus_allowance_amount" />
+                            <field name="ot_allowance_amount" />
+                        </group>
+                        <group col="2" colspan="2" name="left_column">
+                            <separator colspan="2" string="Deduction Amount" />
+                            <field name="pension_company_amount" />
+                            <field name="pension_employee_amount" />
+                            <field name="nhf_allowance_amount" />
+                        </group>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="hr_contract_form_allow_inherit_amount_rule" model="ir.ui.view">
+            <field name="name">hr.contract.form.inherit.amount</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_payroll.hr_contract_form_inherit" />
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='advantages']" position="before">
+                        <group col="2" colspan="2" name="left_column">
+                            <separator colspan="2" string="Salary Rule Configuration (Specific to Contract)" />
+                            <field name="salary_rule_ids" nolabel="1" colspan="4" />
+                        </group>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="hr_contract_form_inherit_analytic" model="ir.ui.view">
+            <field name="name">hr.contract.view.form.inherit</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_payroll_account.hr_contract_form_inherit" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='analytic_account_id']" position="before">
+                    <field name="use_analytic" help="Tick this box if you want to forcefully use below analytic account in move lines creation of payslips." />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

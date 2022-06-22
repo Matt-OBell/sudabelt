@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_employee_subject,employee.subject,model_employee_subject,base.group_user,1,1,1,1
+access_employee_institution,employee.institution,model_employee_institution,base.group_user,1,1,1,1
+access_employee_school_attend,employee.school.attend,model_employee_school_attend,base.group_user,1,1,1,1
+access_employee_prof_qualification,employee.prof.qualification,model_employee_prof_qualification,base.group_user,1,1,1,1
+access_employee_academic_qualification,qualification,model_academic_qualification,base.group_user,1,1,1,1
+access_professional_qualification,professional.qualification,model_professional_qualification,base.group_user,1,1,1,1

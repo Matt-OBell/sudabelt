@@ -1,0 +1,40 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="purchase_form_landed_costs">
+			<field name="name">purchase.order.form.landed.cost</field>
+			<field name="model">purchase.order</field>
+			<field name="inherit_id" ref="purchase.purchase_order_form" />
+			<field name="arch" type="xml">
+				<notebook position="inside">
+					<page string="Landed Costs" attrs="{'invisible': [('apply_cost','=',False)]}">
+						<group col="4" string="Landed Costs">
+							<field name="landed_supplier" />
+							<field name="land_account_id" />
+							<field name="land_amount" />
+							<field name="land_description" />
+							<field name="land_tran_other_journal_id"/>
+
+						</group>
+						<group col="4" string="Transportation Costs">
+							<field name="transport_supplier" />
+							<field name="transport_account_id" />
+							<field name="transport_amount" />
+							<field name="transport_description" />
+						</group>
+						<group col="4" string="Other Costs">
+							<field name="other_account_id" />
+							<field name="other_description" />
+							<field name="other_amount" />
+						</group>
+					</page>
+				</notebook>
+
+				<field name="company_id" position="after">
+					<field name="apply_cost" />
+				</field>
+
+			</field>
+		</record>
+
+    </data>
+</odoo>

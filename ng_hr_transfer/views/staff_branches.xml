@@ -1,0 +1,47 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="staff_branch_form_view">
+            <field name="name">Staff Branches</field>
+            <field name="model">staff.branches</field>
+            <field name="arch" type="xml">
+                <form string="Staff Branches">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="branch_code"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="staff_branch_tree_view">
+            <field name="name">Staff Branches</field>
+            <field name="model">staff.branches</field>
+            <field name="arch" type="xml">
+                <tree string="Staff Branches">
+                    <field name="name"/>
+                    <field name="branch_code"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="add_to_hr">
+			<field name="name">Employees</field>
+			<field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form" />
+			<field name="arch" type="xml">
+				<data>
+                    <xpath expr="//field[@name='job_id']" position="after">
+                        <field name="employee_branch"/>
+                    </xpath>
+                </data>
+            </field>
+         </record>
+    </data>
+</odoo>
