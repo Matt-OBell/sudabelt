@@ -1,24 +1,25 @@
-# -*- coding: utf-8 -*-
-# Author: Damien Crier
 # Copyright 2016 Camptocamp SA
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# Copyright 2018 Lorenzo Battistini <https://github.com/eLBati>
+# Copyright 2020 Simone Rubino - Agile Business Group
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 {
-    'name': 'Account Fiscal Year',
-    'version': '10.0.1.0.0',
-    'category': 'Accounting',
-    'author': 'Camptocamp SA,'
-              'Odoo Community Association (OCA)',
-    'website': 'http://www.camptocamp.com',
-    'depends': [
-        'account',
-        'date_range'
+    "name": "Account Fiscal Year",
+    "summary": "Create Account Fiscal Year",
+    "version": "15.0.1.0.0",
+    "development_status": "Production/Stable",
+    "category": "Accounting",
+    "website": "https://github.com/OCA/account-financial-tools"
+    "14.0/account_fiscal_year",
+    "author": "Agile Business Group, Camptocamp SA, "
+    "Odoo Community Association (OCA)",
+    "maintainers": ["eLBati"],
+    "license": "AGPL-3",
+    "depends": [
+        "account",
     ],
-    'data': [
-        'data/date_range_type.xml',
-        'views/date_range_type.xml',
+    "data": [
+        "security/ir.model.access.csv",
+        "security/account_fiscal_year_rule.xml",
+        "views/account_fiscal_year_views.xml",
     ],
-    'installable': True,
-    'application': True,
-    'auto_install': False,
-    'license': 'AGPL-3',
 }

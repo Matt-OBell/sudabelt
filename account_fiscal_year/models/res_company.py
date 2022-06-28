@@ -1,44 +1,82 @@
-# -*- coding: utf-8 -*-
-# Author: Damien Crier
-# Copyright 2016 Camptocamp SA
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-from odoo import models, fields, api
+#  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+from datetime import timedelta
+
+from odoo import models
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, date_utils
 
 
 class ResCompany(models.Model):
-    _inherit = 'res.company'
+    _inherit = "res.company"
 
-    def find_daterange_fy(self, date):
-        """
-        try to find a date range with type 'fiscalyear'
-        with @param:date contained in its date_start/date_end interval
-        """
-        fy_id = self.env.ref('account_fiscal_year.fiscalyear')
-        date_str = fields.Datetime.to_string(date)
-        s_args = [
-            ('type_id', '=', fy_id.id),
-            ('date_start', '<=', date_str),
-            ('date_end', '>=', date_str),
-            ('company_id', '=', self.id),
-        ]
-        date_range = self.env['date.range'].search(s_args)
-        return date_range
+    def compute_fiscalyear_dates(self, current_date):
+        """Computes the start and end dates of the fiscal year
+        where the given 'date' belongs to.
 
-    @api.multi
-    def compute_fiscalyear_dates(self, date):
-        """ Computes the start and end dates of the fiscalyear where the given
-            'date' belongs to
-            @param date: a datetime object
-            @returns: a dictionary with date_from and date_to
+        :param current_date: A datetime.date/datetime.datetime object.
+        :return: A dictionary containing:
+            * date_from
+            * date_to
+            * [Optionally] record: The fiscal year record.
         """
-        self = self[0]
-        date_range = self.find_daterange_fy(date)
-        if date_range:
-            # do stuff and override 'normal' behaviour
+        self.ensure_one()
+        date_str = current_date.strftime(DEFAULT_SERVER_DATE_FORMAT)
+
+        # Search a fiscal year record containing the date.
+        fiscalyear = self.env["account.fiscal.year"].search(
+            [
+                ("company_id", "=", self.id),
+                ("date_from", "<=", date_str),
+                ("date_to", ">=", date_str),
+            ],
+            limit=1,
+        )
+        if fiscalyear:
             return {
-                'date_from': fields.Date.from_string(date_range[0].date_start),
-                'date_to': fields.Date.from_string(date_range[0].date_end),
+                "date_from": fiscalyear.date_from,
+                "date_to": fiscalyear.date_to,
+                "record": fiscalyear,
             }
-        else:
-            # fall back to standard Odoo computation
-            return super(ResCompany, self).compute_fiscalyear_dates(date)
+
+        date_from, date_to = date_utils.get_fiscal_year(
+            current_date,
+            day=self.fiscalyear_last_day,
+            month=int(self.fiscalyear_last_month),
+        )
+
+        # Search for fiscal year records reducing
+        # the delta between the date_from/date_to.
+        # This case could happen if there is a gap
+        # between two fiscal year records.
+        # E.g. two fiscal year records:
+        # 2017-01-01 -> 2017-02-01 and 2017-03-01 -> 2017-12-31.
+        # =>
+        # The period 2017-02-02 - 2017-02-30 is not covered by a fiscal year record.
+
+        date_from_str = date_from.strftime(DEFAULT_SERVER_DATE_FORMAT)
+        fiscalyear_from = self.env["account.fiscal.year"].search(
+            [
+                ("company_id", "=", self.id),
+                ("date_from", "<=", date_from_str),
+                ("date_to", ">=", date_from_str),
+            ],
+            limit=1,
+        )
+        if fiscalyear_from:
+            date_from = fiscalyear_from.date_to + timedelta(days=1)
+
+        date_to_str = date_to.strftime(DEFAULT_SERVER_DATE_FORMAT)
+        fiscalyear_to = self.env["account.fiscal.year"].search(
+            [
+                ("company_id", "=", self.id),
+                ("date_from", "<=", date_to_str),
+                ("date_to", ">=", date_to_str),
+            ],
+            limit=1,
+        )
+        if fiscalyear_to:
+            date_to = fiscalyear_to.date_from - timedelta(days=1)
+
+        return {
+            "date_from": date_from,
+            "date_to": date_to,
+        }

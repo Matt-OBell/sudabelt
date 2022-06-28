@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': "ng_payment_advice_report",
     'summary': """
@@ -8,14 +7,13 @@
     'author': "Mattobell Limited",
     'website': "http://www.mattobell.com",
     'category': 'Uncategorized',
-    'version': '0.1',
-    'depends': ['base','account_voucher','report'],
+    'version': '15.0.1.0.0',
+    'depends': ['base','account'],
     'data': [
         # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'views/advice_report.xml',
+        'views/account_move.xml',
     ],
-    'demo': [
-        # 'demo/demo.xml',
-    ],
+    "license": "LGPL-3",
+
 }

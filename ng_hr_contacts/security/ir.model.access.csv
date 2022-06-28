@@ -1,7 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_guarantor,guarantor,model_guarantor,base.group_user,1,0,0,0
-access_guarantor_mgr,guarantor_mgr,model_guarantor,base.group_hr_user,1,1,1,1
-access_nextofkin,nextofkin,model_nextofkin,base.group_user,1,0,0,0
-access_nextofkin_mgr,nextofkin_mgr,model_nextofkin,base.group_hr_user,1,1,1,1
-access_refs,refs,model_refs,base.group_user,1,0,0,0
-access_refs_mgr,refs_mgr,model_refs,base.group_hr_user,1,1,1,1

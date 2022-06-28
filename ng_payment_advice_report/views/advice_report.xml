@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="report_payment_advice" model="ir.actions.report">
+        <field name="name">Payment Voucher Report</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ng_payment_advice_report.advice_report</field>
+        <field name="report_file">ng_payment_advice_report.advice_report</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+        <template id="advice_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page" style="font-size:12px">
+                            <p style="line-height:1.0;">
+                                <center><u>
+                                        <h3><b>Payment Advice</b></h3>
+                                    </u></center>
+                            </p>
+                            <br />
+                            <br />
+                            <div class="row">
+                                <p style="float:right;"><b>DATE:</b>
+                                    <t t-esc="doc.date" />
+                                </p>
+                            </div>
+                            <div class="row">
+                                <p style="float:right;"><b>CHEQUE NO:</b>
+                                    <t t-esc="doc.name" />
+                                </p>
+                            </div>
+                            <div>
+                                <p><b>NUMBER:</b>
+                                    <t t-esc="doc.name" />
+                                </p>
+                            </div>
+                            <style>
+                            table {
+                                font-family: arial, sans-serif;
+                                border-collapse: collapse;
+                                width: 100%;
+                            }
+
+                            td,
+                            th {
+                                border: 1px solid #dddddd;
+                                text-align: left;
+                                padding: 8px;
+                            }
+
+                            tr:nth-child(even) {
+                                background-color: #dddddd;
+                            }
+                            </style>
+                            <table>
+                                <tr>
+                                    <th>PRODUCT</th>
+                                    <th>ACCOUNT</th>
+                                    <th>QUANTITY</th>
+                                    <th>PRICE UNIT</th>
+                                    <th>TAX</th>
+                                    <th>AMOUNT</th>
+                                </tr>
+                                <tr t-foreach="doc.line_ids" t-as="line">
+                                    <td><span t-field="line.name" /></td>
+                                    <td><span t-field="line.account_id" /></td>
+                                    <td><span t-field="line.quantity" /></td>
+                                    <td><span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": doc.currency_id}' /></td>
+                                    <td><span t-field="line.tax_ids.name" /></td>
+                                    <td><span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.currency_id}' /></td>
+                                </tr>
+                            </table>
+                            <div class="row">
+                                <div class="col-xs-4 pull-right">
+                                    <table class="table table-condensed">
+                                        <tr class="border-black">
+                                            <td><strong>Subtotal</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="doc.amount_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}' />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}' />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <p><b>AMOUNT IN WORDS: </b> <i>
+                                        <t t-esc="doc.amount_in_word" />
+                                    </i></p>
+                            </div>
+                            <br />
+                            <style>
+                            .floating-box {
+                                display: inline-block;
+                                width: 220px;
+                                height: 80px;
+                                margin: 25px;
+                                border: 0px solid #000000;
+                                font-size:12px;
+                            }
+
+                            .after-box {
+                                border: 0px solid red;
+                            }
+                            </style>
+                            <div class="floating-box">
+                                <p>______________________</p>
+                                <p>AUTHORISED SIGNATORY</p>
+                                <p>PREPARED BY:</p>
+                                <p>SIGNATURE:</p>
+                                <p>DATE:</p>
+                            </div>
+                            <div class="floating-box">
+                                <p>______________________</p>
+                                <p>AUTHORISED SIGNATORY</p>
+                                <p>PREPARED BY:</p>
+                                <p>SIGNATURE:</p>
+                                <p>DATE:</p>
+                            </div>
+                            <div class="floating-box">
+                                <p>______________________</p>
+                                <p>AUTHORISED SIGNATORY</p>
+                                <p>PREPARED BY:</p>
+                                <p>SIGNATURE:</p>
+                                <p>DATE:</p>
+                            </div>
+                            <br />
+                            <br />
+                            
+                            <div class="floating-box">
+                                <p style="float: right;"><b>Slip Generated Date:</b> <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')" /></p>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
